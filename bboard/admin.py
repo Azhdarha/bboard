@@ -1,3 +1,6 @@
 from django.contrib import admin
+from bboard.models import Rubric, Bb
 
-# Register your models here.
+admin.site.register(Rubric)
+admin.site.register(Bb)
+
