@@ -13,9 +13,9 @@ class MinMaxValidator:
         self.min_value = min_value
         self.max_value = max_value
 
-    def __call__(self, val):
-        if val < self.min_value or val > self.max_value:
-            raise ValidationError(%(min)%),
+    #def __call__(self, val):
+        #if val < self.min_value or val > self.max_value:
+            #raise ValidationError(%(min)%),
         #code='out'
 
 class Rubric(models.Model):
