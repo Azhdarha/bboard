@@ -3,13 +3,14 @@ from django.shortcuts import render
 from django.template import loader
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView
+from django.db.models import Count
 
 #from bboard.forms import BbForm
 from bboard.models import Bb, Rubric
 
 def index(request):
     bbs = Bb.objects.order_by('-published')
-    rubrics = Rubric.objects.all()
+    rubrics = Rubric.objects.annotate(cnt=Count('bb')).filter(cnt__gt=0)
     context = {'bbs': bbs, 'rubrics': rubrics}
 
     return render(request, 'bboard/index.html', context)
@@ -17,7 +18,7 @@ def index(request):
 
 def by_rubric(request, rubric_id):
     bbs = Bb.objects.filter(rubric=rubric_id)
-    rubrics = Rubric.objects.all()
+    rubrics = Rubric.objects.annotate(cnt=Count('bb')).filter(cnt__gt=0)
     current_rubric = Rubric.objects.get(pk=rubric_id)
 
     #bbs = current_rubric.objects.all()
@@ -34,5 +35,5 @@ class BbCreateView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['rubrics'] = Rubric.objects.all()
+        context['rubrics'] = Rubric.objects.annotate(cnt=Count('bb')).filter(cnt__gt=0)
         return context
