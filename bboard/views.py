@@ -37,7 +37,7 @@ def by_rubric(request, rubric_id):
 
     return render(request, 'bboard/by_rubric.html', context)
 
-
+#-----------------------------------------Контролер Класс
 class BbRubricBbsView(TemplateView):
     template_name = 'bboard/rubric_bbs.html'
 
@@ -48,7 +48,7 @@ class BbRubricBbsView(TemplateView):
             cnt=Count('bb')).filter(cnt__gt=0)
         context['current_rubric'] = Rubric.objects.get(pk=context['rubric_id'])
         return context
-
+#-------------------------------
 
 # Основной (вернуть)
 # class BbCreateView(CreateView):
@@ -101,16 +101,41 @@ def add_and_save(request):
         context = {'form': bbf}
         return render(request, 'bboard/bb_create.html', context)
 
+#--------------------------------
+# def bb_detail(request, bb_id):
+#     try:
+#         # bb = Bb.objects.get(pk=bb_id)
+#         bb = get_object_or_404(Bb, pk=bb_id)
+#     except Bb.DoesNotExist:
+#         # return HttpResponseNotFound('Такое объявление не существует')
+#         return Http404('Такое объявление не существует')
+#
+#     rubrics = Rubric.objects.annotate(cnt=Count('bb')).filter(cnt__gt=0)
+#     context = {'bb': bb, 'rubrics': rubrics}
+#
+#     return render(request, 'bboard/bb_detail.html', context)
 
-def bb_detail(request, bb_id):
-    try:
-        # bb = Bb.objects.get(pk=bb_id)
-        bb = get_object_or_404(Bb, pk=bb_id)
-    except Bb.DoesNotExist:
-        # return HttpResponseNotFound('Такое объявление не существует')
-        return Http404('Такое объявление не существует')
+class BbDetailView(TemplateView):
+    template_name = 'bboard/bb_detail.html'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['bb'] = Bb.objects.get(pk=context['bb_id'])
+        context['rubrics'] = Rubric.objects.annotate(cnt=Count('bb')).filter(cnt__gt=0)
 
-    rubrics = Rubric.objects.annotate(cnt=Count('bb')).filter(cnt__gt=0)
-    context = {'bb': bb, 'rubrics': rubrics}
+        return context
 
-    return render(request, 'bboard/bb_detail.html', context)
+
+
+
+#bb_detail_controller
+
+# class BbRubricBbsView(TemplateView):
+#     template_name = 'bboard/rubric_bbs.html'
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['bbs'] = Bb.objects.filter(rubric=context['rubric_id'])
+#         context['rubrics'] = Rubric.objects.annotate(
+#             cnt=Count('bb')).filter(cnt__gt=0)
+#         context['current_rubric'] = Rubric.objects.get(pk=context['rubric_id'])
+#         return context
