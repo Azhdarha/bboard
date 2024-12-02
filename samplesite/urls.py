@@ -19,12 +19,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('todo/', include('todolist.urls', namespace='todo')),
     path('', include('bboard.urls', namespace='bboard')),
-    path('sms/', include('sms.urls', namespace='sms')),
-
-    #path('', include([
-    #    path('add/', BbCreateViews.as_view(), name='add'),
-    #    path('<int:rubric_id>/',by_rubric,name='by_rubric'),
-    #    path('', index, name='index')
-    #]),
 ]

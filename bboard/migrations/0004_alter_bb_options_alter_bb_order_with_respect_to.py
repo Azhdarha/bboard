@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='bb',
-            options={'ordering': ['-published', 'title'], 'verbose_name': 'Обявление', 'verbose_name_plural': 'Объявления'},
+            options={'ordering': ['-published', 'title'], 'verbose_name': 'Объявление', 'verbose_name_plural': 'Объявления'},
         ),
         migrations.AlterOrderWithRespectTo(
             name='bb',

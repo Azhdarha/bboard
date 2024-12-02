@@ -1,10 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "layout/basic.html" %}
 
-</body>
-</html>
+
+{% block title %}{{ current_rubric }}{% endblock %}
+
+{% block content %}
+    {% for bb in bbs %}
+    <div>
+        <h2>
+            <a href="{% url 'bboard:detail' bb.pk %}">{{ bb.title }}</a>
+        </h2>
+        <p>{{ bb.content }}</p>
+        <p>{{ bb.published|date:"d.m.Y H:i:s" }}</p>
+    </div>
+    {% endfor %}
+{% endblock %}

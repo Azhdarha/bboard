@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 
+from django.conf.global_settings import STATICFILES_DIRS, ABSOLUTE_URL_OVERRIDES
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-g#mdgy6rg(uriic$qz(ia#k=d=z^i^i-&)g1tazqnzf#ct3fuq'
+SECRET_KEY = 'django-insecure-=tmq^(flv8$!!=k(oo@xt-65ha*254nv%aoj10z$uk*wyk%*3o'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,9 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'bboard',
+
+    'bboard',  # 'bboard.apps.BboardConfig',
     'testapp',
-    'sms',
+    # 'todolist',
 ]
 
 MIDDLEWARE = [
@@ -57,7 +60,7 @@ ROOT_URLCONF = 'samplesite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR/'templates'],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -120,7 +123,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
-    BASE_DIR/ 'static'
+    BASE_DIR / 'static'
 ]
 
 # Default primary key field type
@@ -129,7 +132,8 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+# ABSOLUTE_URL_OVERRIDES = {
+#     'bboard.rubric': lambda rec: f"{rec.pk}/"
+# }
 
-#ABSOLUTE_URL_OVERRIDES = {
-#    'bboard.rubric': lambda rec: f"{rec.pk}/",
-#}
+DEFAULT_CHARSET = 'utf-8'
