@@ -21,7 +21,6 @@
     {% for rubric in rubrics %}
         <a href="{% url 'bboard:by_rubric' rubric.pk %}">{{ rubric.name }}
             ({{ rubric.cnt }})</a>
-{#        <a href="{{ rubric.get_absolute_url }}">{{ rubric.name }}</a>#}
     {% endfor %}
 </nav>
 

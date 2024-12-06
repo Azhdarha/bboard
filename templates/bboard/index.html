@@ -1,9 +1,13 @@
 {% extends "layout/basic.html" %}
 
 {% block content %}
+    <p>
+        {% for d in date_list %}
+            {{ d.year }}
+        {% endfor %}
+    </p>
     {% for bb in bbs %}
     <div>
-{#        <h2>{{ bb.title }}</h2>#}
         <h2>
             <a href="{% url 'bboard:detail' bb.pk %}">{{ bb.title_and_price }}</a>
         </h2>
