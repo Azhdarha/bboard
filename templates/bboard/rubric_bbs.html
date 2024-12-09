@@ -4,14 +4,20 @@
 {% block title %}{{ current_rubric }}{% endblock %}
 
 {% block content %}
-    <h2>Рубрика: {{ current_rubric.name }}</h2>
     {% for bb in bbs %}
-    <div>
-        <h2>
-            <a href="{% url 'bboard:detail' bb.pk %}">{{ bb.title }}</a>
-        </h2>
+
+        {% url 'bboard:detail' bb.pk as detail_url %}
+
+    <div class="{% cycle 'bb1' 'bb2' 'bb3' %}">
+
+            <h2 style="font-size: 48px">{{ forloop.counter }}.
+{#                <a href="{% url 'bboard:detail' bb.pk %}">{{ bb.title }}</a> #}
+                <a href="{{ detail_urls }}">{{ bb.title}}</a>
+            </h2>
         <p>{{ bb.content }}</p>
         <p>{{ bb.published|date:"d.m.Y H:i:s" }}</p>
+
+        {% firstof bb.phone bb.email 'На деревне дедушкке' %}
     </div>
     {% endfor %}
 {% endblock %}

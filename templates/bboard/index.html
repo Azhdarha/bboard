@@ -1,11 +1,12 @@
 {% extends "layout/basic.html" %}
 
 {% block content %}
-    <p>
-        {% for d in date_list %}
-            {{ d.year }}
-        {% endfor %}
-    </p>
+
+    {% with bb_count=bbs.count %}
+        {% if bb_count > 0 %}
+            <p> {{ bb_count }} </p>
+        {% endif %}
+    {% endwith %}
     {% for bb in bbs %}
     <div>
         <h2>
