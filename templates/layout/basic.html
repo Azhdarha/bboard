@@ -11,25 +11,19 @@
 </head>
 <body>
 
-<header>
-    <h1>Объявления</h1>
-</header>
+{% include "layout/inc/inc_header.html" %}
 
-<nav>
-    <a href="{% url 'bboard:index' %}">Главная</a>
-    <a href="{% url 'bboard:add' %}">Добавить</a>
-    {% for rubric in rubrics %}
-        <a href="{% url 'bboard:by_rubric' rubric.pk %}">{{ rubric.name }}
-            ({{ rubric.cnt }})</a>
-    {% endfor %}
-</nav>
+{% include "layout/inc/inc_main_menu.html" %}
+
 
 <section>
     {% block content %}
     {% endblock %}
 </section>
 
-<footer>{% now 'SHORT_DATETIME_FORMAT' %}</footer>
+{% include "layout/inc/inc_footer.html" %}
+
+
 
 </body>
 </html>
