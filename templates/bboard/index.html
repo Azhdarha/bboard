@@ -2,36 +2,73 @@
 
 {% block content %}
 
+    {#    {{ block.super }} #}
+
     {% with bb_count=bbs.count %}
         {% if bb_count > 0 %}
-            <p> {{ bb_count }} </p>
+            <p>Всего {{ bb_count }} объявлений.</p>
         {% endif %}
     {% endwith %}
+
     {% for bb in bbs %}
-    <div>
-        <h2>
-            <a href="{% url 'bboard:detail' bb.pk %}">{{ bb.title_and_price }}</a>
-        </h2>
-        <p>{{ bb.content }}</p>
-        <p><a href="{% url 'bboard:by_rubric' bb.rubric.pk %}">
-            {{ bb.rubric.name }}</a></p>
-        <p>{{ bb.published|date:"d.m.Y H:i:s" }}</p>
-    </div>
+        <div>
+            <h2>
+                <a href="{% url 'bboard:detail' bb.pk %}">{{ bb.title_and_price }}</a>
+            </h2>
+            <p>{{ bb.content }}</p>
+            <p><a href="{% url 'bboard:by_rubric' bb.rubric.pk %}">
+                {{ bb.rubric.name }}</a></p>
+            <p>{{ bb.published|date:"d.m.Y H:i:s" }}</p>
+        </div>
     {% endfor %}
 
     <div>
         {% if page.has_previous %}
             <a href="?page={{ page.previous_page_number }}">&lt;</a>
             &nbsp; &nbsp; | &nbsp; &nbsp;
-    {% endif %}
+        {% endif %}
 
-    часть №{{ page.number }} из {{ page.paginator.num_pages }}
+        Часть №{{ page.number }} из {{ page.paginator.num_pages }}
 
-    {% if page.has_next %}
-        &nbsp; &nbsp; | &nbsp; &nbsp;
-        <a href="?page={{ page.next_page_number }}">&gt;</a>
-
-    {% endif %}
+        {% if page.has_next %}
+            &nbsp; &nbsp; | &nbsp; &nbsp;
+            <a href="?page={{ page.next_page_number }}">&gt;</a>
+        {% endif %}
     </div>
+
+    <nav aria-label="Page navigation example">
+        <ul class="pagination pagination-sm">
+            <li class="page-item{% if not page.has_previous %} disabled{% endif %}">
+                {% if page.has_previous %}
+                    <a class="page-link" href="?page={{ page.previous_page_number }}"
+                       aria-label="Previous">
+                {% else %}
+                    <a class="page-link" href="#" aria-label="Previous">
+                {% endif %}
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+        
+            {% for i in page.paginator.page_range %}
+                <li class="page-item
+                    {% if i == page.number %}
+                        active" aria-current="page
+                    {% endif %}">
+                    <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                </li>
+            {% endfor %}
+            
+            <li class="page-item{% if not page.has_next %} disabled{% endif %}">
+            {% if page.has_next %}
+                <a class="page-link" href="?page={{ page.next_page_number }}"
+                   aria-label="Next">
+            {% else %}
+                <a class="page-link" href="#" aria-label="Next">
+            {% endif %}
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 
 {% endblock %}

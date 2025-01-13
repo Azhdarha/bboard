@@ -1,5 +1,11 @@
+from django.contrib.auth import get_user
+from django.contrib.auth.decorators import login_required, user_passes_test, permission_required
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.paginator import Paginator
+from django.db import transaction, DatabaseError
 from django.db.models import Count
+from django.forms import modelformset_factory
+from django.forms.models import inlineformset_factory
 from django.http import (HttpResponse, HttpResponseRedirect, HttpResponseNotFound,
                          Http404, StreamingHttpResponse, FileResponse, JsonResponse)
 from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
@@ -15,7 +21,7 @@ from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.views.generic.base import View, TemplateView
 from django.views.generic.edit import CreateView, FormView, UpdateView, DeleteView
 
-from bboard.forms import BbForm
+from bboard.forms import BbForm, RubricBaseFormSet, SearchForm
 from bboard.models import Bb, Rubric
 
 
@@ -28,6 +34,7 @@ from bboard.models import Bb, Rubric
 #
 #     return render(request, 'bboard/index.html', context)
 
+
 def index(request):
     bbs = Bb.objects.order_by('-published')
     rubrics = Rubric.objects.annotate(cnt=Count('bb')).filter(cnt__gt=0)
@@ -39,11 +46,12 @@ def index(request):
     else:
         page_num = 1
 
-    page = paginator.page(page_num)
+    page = paginator.get_page(page_num)
 
-    context = {'bbs': page.object_list, 'rubrics': rubrics, 'page':page}
+    context = {'bbs': page.object_list, 'rubrics': rubrics, 'page': page}
 
     return render(request, 'bboard/index.html', context)
+
 
 class BbIndexView(ArchiveIndexView):
     model = Bb
@@ -115,11 +123,15 @@ class BbRubricBbsView(ListView):
 
 
 # Основной (вернуть)
-class BbCreateView(CreateView):
+class BbCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     template_name = 'bboard/bb_create.html'
     model = Bb
     form_class = BbForm
     success_url = reverse_lazy('bboard:index')
+    # initial = {'price': 1000.0}
+
+    def test_func(self):
+        return self.request.user.is_staff
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -141,12 +153,13 @@ def add_and_save(request):
             context = {'form': bbf}
             return render(request, 'bboard/bb_create.html', context)
     else:
+        # bbf = BbForm(initial={'price': 1000.0})
         bbf = BbForm()
-
         context = {'form': bbf}
         return render(request, 'bboard/bb_create.html', context)
 
 
+# Основной, вернуть
 class BbEditView(UpdateView):
     model = Bb
     form_class = BbForm
@@ -157,6 +170,24 @@ class BbEditView(UpdateView):
         context['rubrics'] = Rubric.objects.annotate(
                                             cnt=Count('bb')).filter(cnt__gt=0)
         return context
+
+
+def edit(request, pk):
+    bb = Bb.objects.get(pk=pk)
+    if request.method == 'POST':
+        bbf = BbForm(request.POST, instance=bb)
+        if bbf.is_valid():
+            # if bbf.has_changed():
+            bbf.save()
+            return HttpResponseRedirect(reverse('bboard:by_rubric',
+                        kwargs={'rubric_id': bbf.cleaned_data['rubric'].pk}))
+        else:
+            context = {'form': bbf}
+            return render(request, 'bboard/bb_form.html', context)
+    else:
+        bbf = BbForm(instance=bb)
+        context = {'form': bbf}
+        return render(request, 'bboard/bb_form.html', context)
 
 
 def bb_detail(request, bb_id):
@@ -192,3 +223,120 @@ class BbDeleteView(DeleteView):
         context['rubrics'] = Rubric.objects.annotate(
                                             cnt=Count('bb')).filter(cnt__gt=0)
         return context
+
+
+@login_required(login_url='/login/')
+@user_passes_test(lambda user: user.is_staff)
+# @permission_required('bboard.add_rubric')
+def rubrics(request):
+    RubricFormSet = modelformset_factory(Rubric, fields=('name',),
+                                         can_order=True,
+                                         can_delete=True,
+                                         formset=RubricBaseFormSet,
+                                         # extra=3
+                                         )
+
+    if request.method == 'POST':
+        formset = RubricFormSet(request.POST)
+        if formset.is_valid():
+            formset.save(commit=False)
+            for form in formset:
+                if form.cleaned_data:
+                    rubric = form.save(commit=False)
+                    if rubric in formset.deleted_objects:
+                        rubric.delete()
+                    else:
+                        if form['ORDER'].data:
+                            rubric.order = form['ORDER'].data
+                        rubric.save()
+            return redirect('bboard:index')
+    else:
+        formset = RubricFormSet()
+    context = {'formset': formset}
+    return render(request, 'bboard/rubrics.html', context)
+
+
+def bbs(request, rubric_id):
+    BbsFormSet = inlineformset_factory(Rubric, Bb,
+                                       form=BbForm, extra=1)
+    rubric = Rubric.objects.get(pk=rubric_id)
+    if request.method == 'POST':
+        formset = BbsFormSet(request.POST, instance=rubric)
+        if formset.is_valid():
+            formset.save()
+            return redirect('bboard:index')
+    else:
+        formset = BbsFormSet(instance=rubric)
+    context = {'formset': formset, 'current_rubric': rubric}
+    return render(request, 'bboard/bbs.html', context)
+
+
+def commit_handler():
+    pass
+    # Действия после подтверждения транзакции
+
+
+# @transaction.non_atomic_requests  # не атомарные  'ATOMIC_REQUEST': False,
+# @transaction.atomic               # атомарные     'ATOMIC_REQUEST': True,
+def my_view(request):
+    # if formset.is_valid():
+    #     with transaction.atomic():
+    #         for form in formset:
+    #             if form.cleaned_data:
+    #                 with transaction.atomic():
+    #                     pass
+
+    # try:
+    #     with transaction.atomic():
+    #         # сохранить данные в БД
+    #         pass
+    # except DatabaseError:
+    #     # Реагируем на ошибки
+    #     pass
+
+    # bbs = Bb.objects.select_for_updates().filter(price__lt=100)
+    bbs = Bb.objects.select_for_updates(skip_locked=True,
+                                        of=('self', 'rubric')).filter(price__lt=100)
+    # with transaction.atomic():
+    #     for bb in bbs:
+    #         bb.price = 100
+    #         bb.save()
+
+    # if form.is_valid():
+    #     try:
+    #         form.save()
+    #         transaction.commit()
+    #     except:
+    #         transaction.rollback()
+
+    # if formset.is_valid():
+    #     for form in formset:
+    #         if form.cleaned_data:
+    #             sp = transaction.savepoint()
+    #             try:
+    #                 form.save()
+    #                 transaction.savepoint_commit(sp)
+    #             except:
+    #                 transaction.savepoint_rollback(sp)
+    #             transaction.commit()
+
+    #             transaction.on_commit(commit_handler)
+
+    return redirect('bboard:index')
+
+
+def search(request):
+    if request.method == 'POST':
+        sf = SearchForm(request.POST)
+        if sf.is_valid():
+            keyword = sf.cleaned_data['keyword']
+            rubric_id = sf.cleaned_data['rubric'].pk
+            bbs = Bb.objects.filter(title__icontains=keyword, rubric=rubric_id)
+
+            context = {'bbs': bbs, 'form': sf}
+            return render(request, 'bboard/search_results.html', context)
+    else:
+        sf = SearchForm()
+
+    context = {'form': sf}
+    return render(request, 'bboard/search.html', context)

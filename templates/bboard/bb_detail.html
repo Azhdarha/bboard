@@ -9,7 +9,7 @@
                                                 {{ bb.rubric.name }}</a></p>
         <h2>{{ bb.title }}</h2>
         <p>{{ bb.content }}</p>
-        <p>Цена: <strong>{{ bb.price }}</strong> тг.</p>
+        <p>Цена: <strong>{{ bb.price|floatformat:'2g' }}</strong> тг.</p>
         <p>{{ bb.published|date:"d.m.Y H:i:s" }}</p>
         <p>
             <a href="{% url 'bboard:edit' bb.pk %}">Изменить</a> |

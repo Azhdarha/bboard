@@ -1,0 +1,23 @@
+{% extends "layout/basic.html" %}
+
+
+{% block title %}Поиск объявления{% endblock %}
+
+{% block content %}
+<h2>Изменение объявления</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p}}
+
+        <button type="submit">Искать</button>
+    </form>
+
+    {% for bb in bbs %}
+    <div>
+        <h2>
+            <a href="{% url 'bboard:detail' bb.pk %}">{{ bb.title }}</a>
+        </h2>
+        <p>{{ bb.published|date:"d.m.Y H:i:s" }}</p>
+    </div>
+    {% endfor %}
+{% endblock %}

@@ -6,7 +6,7 @@ header h1 {
 }
 nav {
     font-size: 16pt;
-    width: 150px;
+    width: 220px;
     float: left;
 }
 nav a {
@@ -14,5 +14,12 @@ nav a {
     margin: 10px 0;
 }
 section {
-    margin-left: 170px;
+    margin-left: 235px;
+}
+
+.bb1 {
+    background-color: antiquewhite;
+}
+.bb2 {
+    background-color: beige;
 }

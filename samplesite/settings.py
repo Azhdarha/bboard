@@ -39,6 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.postgres',
+
+
+    'captcha',
+
 
     'bboard',  # 'bboard.apps.BboardConfig',
     'testapp',
@@ -80,13 +85,25 @@ WSGI_APPLICATION = 'samplesite.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': BASE_DIR / 'db.sqlite3',
+#        # 'ATOMIC_REQUEST': True,  # False,
+#        # 'AUTOCOMMIT': False,     # True,
+#    }
+# }
 
+DATABASES = {
+   "default": {
+       "ENGINE": "django.db.backends.postgresql_psycopg2",
+       "NAME": "django_db",
+       "USER": "db_user",
+       "PASSWORD": "12345",
+       "HOST": "127.0.0.1",
+       "PORT": "5434",
+   }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -126,6 +143,7 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static'
 ]
+# STATIC_ROOT = BASE_DIR / 'static'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -138,3 +156,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # }
 
 DEFAULT_CHARSET = 'utf-8'
+
+# LOGIN_URL = "/accounts/login/"
+LOGIN_REDIRECT_URL = 'bboard:index'
+LOGOUT_REDIRECT_URL = 'bboard:index'
+# PASSWORD_RESET_TIMEOUT = 60 * 60 * 24 * 3  # 259_200

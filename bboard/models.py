@@ -23,6 +23,27 @@ class MinMaxValueValidator:
 
 
 
+class RubricQuerySet(models.QuerySet):
+    def order_by_bb_count(self):
+        return self.annotate(
+            cnt=models.Count('bb')).order_by('-cnt')
+
+
+class RubricManager(models.Manager):
+    # def get_queryset(self):
+    #     return super().get_queryset().order_by('order', 'name')
+
+    # def order_by_bb_count(self):
+    #     return super().get_queryset().annotate(
+    #         cnt=models.Count('bb')).order_by('-cnt')
+
+    def get_queryset(self):
+        return RubricQuerySet(self.model, using=self._db)
+
+    def order_by_bb_count(self):
+        return self.get_queryset().order_by_bb_count()
+
+
 class Rubric(models.Model):
     name = models.CharField(
         unique=True,
@@ -31,23 +52,35 @@ class Rubric(models.Model):
         verbose_name='Название',
     )
 
+    order = models.SmallIntegerField(default=0, db_index=True)
+
+    # objects = models.Manager()
+    # bbs = RubricManager()
+
+    # objects = RubricManager()
+
+    # objects = RubricQuerySet.as_manager()
+    objects = models.Manager.from_queryset(RubricQuerySet)()
+
     def __str__(self):
         return f'{self.name}'
-
-    # def get_absolut_url(self):
-    #     return f"{self.pk}/"
-
-    # def save(self, *args, **kwargs):
-    #     # Действия перед сохранением
-    #     super().save(*args, **kwargs)
-    #     # Действия после сохранением
-    #
-    # def delete(self, *args, **kwargs):
-    #     super().delete(*args, **kwargs)
 
     class Meta:
         verbose_name = 'Рубрика'
         verbose_name_plural = 'Рубрики'
+        ordering = ['order', 'name']
+
+
+# 3. Прокси-модели
+class RevRubric(Rubric):
+    class Meta:
+        proxy = True
+        ordering = ['-name']
+
+
+class BbManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().order_by('price')
 
 
 class Bb(models.Model):
@@ -109,7 +142,7 @@ class Bb(models.Model):
         blank=True,
         default=0,
         verbose_name='Цена',
-        validators=[validate_even]
+        # validators=[validate_even]
     )
 
     published = models.DateTimeField(
@@ -122,6 +155,9 @@ class Bb(models.Model):
     # email = models.EmailField()
     # url = models.URLField()
     # slug = models.SlugField()
+
+    objects = models.Manager()
+    by_price = BbManager()
 
     def title_and_price(self):
         if self.price:
