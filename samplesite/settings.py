@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 
 
     'captcha',
+    'precise_bbcode',
 
 
     'bboard',  # 'bboard.apps.BboardConfig',
@@ -85,25 +86,25 @@ WSGI_APPLICATION = 'samplesite.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.sqlite3',
-#        'NAME': BASE_DIR / 'db.sqlite3',
-#        # 'ATOMIC_REQUEST': True,  # False,
-#        # 'AUTOCOMMIT': False,     # True,
-#    }
-# }
-
 DATABASES = {
-   "default": {
-       "ENGINE": "django.db.backends.postgresql_psycopg2",
-       "NAME": "django_db",
-       "USER": "db_user",
-       "PASSWORD": "12345",
-       "HOST": "127.0.0.1",
-       "PORT": "5434",
+   'default': {
+       'ENGINE': 'django.db.backends.sqlite3',
+       'NAME': BASE_DIR / 'db.sqlite3',
+       # 'ATOMIC_REQUEST': True,  # False,
+       # 'AUTOCOMMIT': False,     # True,
    }
 }
+
+# DATABASES = {
+#    "default": {
+#        "ENGINE": "django.db.backends.postgresql_psycopg2",
+#        "NAME": "django_db",
+#        "USER": "db_user",
+#        "PASSWORD": "12345",
+#        "HOST": "127.0.0.1",
+#        "PORT": "5434",
+#    }
+#}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -161,3 +162,4 @@ DEFAULT_CHARSET = 'utf-8'
 LOGIN_REDIRECT_URL = 'bboard:index'
 LOGOUT_REDIRECT_URL = 'bboard:index'
 # PASSWORD_RESET_TIMEOUT = 60 * 60 * 24 * 3  # 259_200
+

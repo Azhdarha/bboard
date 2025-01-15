@@ -1,4 +1,5 @@
 {% extends "layout/basic.html" %}
+{% load bbcode_tage %}
 
 {% block content %}
 
@@ -15,7 +16,8 @@
             <h2>
                 <a href="{% url 'bboard:detail' bb.pk %}">{{ bb.title_and_price }}</a>
             </h2>
-            <p>{{ bb.content }}</p>
+{#            <p>{{ bb.content }}</p>#}
+            <p>{% bbcode bb.content %}</p>
             <p><a href="{% url 'bboard:by_rubric' bb.rubric.pk %}">
                 {{ bb.rubric.name }}</a></p>
             <p>{{ bb.published|date:"d.m.Y H:i:s" }}</p>

@@ -1,6 +1,7 @@
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
+from precise_bbcode.fields import BBCodeTextField
 
 
 def validate_even(val):
