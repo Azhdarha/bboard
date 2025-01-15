@@ -15,6 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView, PasswordChangeDoneView, \
     PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
@@ -41,8 +42,13 @@ urlpatterns = [
          name='password_reset_complete'),
 
     path('todo/', include('todolist.urls', namespace='todo')),
-    path('', include('bboard.urls', namespace='bboard')),
 
+    path('', include('bboard.urls', namespace='bboard')),
+]
+
+urlpatterns += [
     path('captcha/', include('captcha.urls')),
 ]
 
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

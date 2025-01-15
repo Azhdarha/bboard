@@ -12,7 +12,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 
-from django.conf.global_settings import STATICFILES_DIRS, ABSOLUTE_URL_OVERRIDES
+from captcha.conf.settings import CAPTCHA_TIMEOUT, CAPTCHA_LENGTH
+from django.conf.global_settings import STATICFILES_DIRS, ABSOLUTE_URL_OVERRIDES, MEDIA_URL
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -39,12 +40,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.postgres',
 
+    # 'django.contrib.postgres',
 
     'captcha',
     'precise_bbcode',
-
 
     'bboard',  # 'bboard.apps.BboardConfig',
     'testapp',
@@ -87,24 +87,22 @@ WSGI_APPLICATION = 'samplesite.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-   'default': {
-       'ENGINE': 'django.db.backends.sqlite3',
-       'NAME': BASE_DIR / 'db.sqlite3',
-       # 'ATOMIC_REQUEST': True,  # False,
-       # 'AUTOCOMMIT': False,     # True,
-   }
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+        # 'ATOMIC_REQUEST': True,  # False,
+        # 'AUTOCOMMIT': False,     # True,
+    }
+    # "default": {
+    #     "ENGINE": "django.db.backends.postgresql_psycopg2",
+    #     "NAME": "django_db",
+    #     "USER": "db_user",
+    #     "PASSWORD": "12345",
+    #     "HOST": "127.0.0.1",
+    #     "PORT": "5432",
+    # }
 }
 
-# DATABASES = {
-#    "default": {
-#        "ENGINE": "django.db.backends.postgresql_psycopg2",
-#        "NAME": "django_db",
-#        "USER": "db_user",
-#        "PASSWORD": "12345",
-#        "HOST": "127.0.0.1",
-#        "PORT": "5434",
-#    }
-#}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -146,6 +144,9 @@ STATICFILES_DIRS = [
 ]
 # STATIC_ROOT = BASE_DIR / 'static'
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
@@ -163,3 +164,21 @@ LOGIN_REDIRECT_URL = 'bboard:index'
 LOGOUT_REDIRECT_URL = 'bboard:index'
 # PASSWORD_RESET_TIMEOUT = 60 * 60 * 24 * 3  # 259_200
 
+# CAPTCHA
+# CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.random_char_challenge'
+# CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'
+# CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.word_challenge'
+
+# CAPTCHA_TIMEOUT = 5  # минут
+CAPTCHA_LENGTH = 6  # 4 по умолчанию
+
+# CAPTCHA_WORDS_DICTIONARY = BASE_DIR / 'static/bboard/words.txt'
+
+# CAPTCHA_LETTER_ROTATION = (-95, 95)
+
+# DATA_UPLOAD_MAX_MEMORY_SIZE = 2_621_440  # 2.5 Mb
+# DATA_UPLOAD_MAX_NUMBER_FIELDS = 1000
+
+# BBCODE
+# BBCODE_NEWLINE = '<br>'
+# BBCODE_ALLOW_CUSTOM_TAGS = False

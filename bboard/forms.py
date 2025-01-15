@@ -1,3 +1,4 @@
+from captcha.fields import CaptchaField
 from django import forms
 from django.contrib.auth.models import User
 from django.core import validators
@@ -7,8 +8,6 @@ from django.forms.fields import DecimalField
 from django.forms.models import BaseModelFormSet
 
 from bboard.models import Bb, Rubric
-from captcha.fields import CaptchaField
-
 
 
 # Основной (вернуть)
@@ -19,7 +18,11 @@ class BbForm(ModelForm):
         error_messages={'invalid': 'Слишком короткое название товара'}
     )
 
-    captcha = CaptchaField(label='ведите текст с картинки', error_messages={'invalid': 'неправельный текст'})
+    captcha = CaptchaField(label='Введите текст с картинки',
+                           # generator='captcha.helpers.random_char_challenge',
+                           # generator='captcha.helpers.math_challenge',
+                           # generator='captcha.helpers.word_challenge',
+                           error_messages={'invalid': 'Неправильный текст'})
 
     def clean_title(self):
         val = self.cleaned_data['title']
@@ -123,7 +126,7 @@ class RubricBaseFormSet(BaseModelFormSet):
                 'Добавьте рубрики недвижимости, транспорта и мебели')
 
 
-
 class SearchForm(forms.Form):
-    keyword = forms.CharField(max_length=20, label='Искаемое слово')
-    rubric = forms.ModelChoiceField(queryset=Rubric.objects.all(), label='Рубрика')
+    keyword = forms.CharField(max_length=20, label='Искомое слово')
+    rubric = forms.ModelChoiceField(queryset=Rubric.objects.all(),
+                                    label='Рубрика')

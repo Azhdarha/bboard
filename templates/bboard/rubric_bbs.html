@@ -1,5 +1,5 @@
 {% extends "layout/basic.html" %}
-
+{% load bbcode_tags %}
 
 {% block title %}{{ current_rubric }}{% endblock %}
 
@@ -22,7 +22,8 @@
             </h2>
         {% endif %}
 {#        <p>{{ bb.content|truncatewords:3 }}</p>#}
-        <p>{{ bb.content }}</p>
+{#        <p>{{ bb.content }}</p>#}
+        <p>{% bbcode bb.content %}</p>
 
         {% ifchanged bb.rubric.pk %}
             <p><a href="{% url 'bboard:by_rubric' bb.rubric.pk %}">

@@ -331,7 +331,11 @@ def search(request):
         if sf.is_valid():
             keyword = sf.cleaned_data['keyword']
             rubric_id = sf.cleaned_data['rubric'].pk
-            bbs = Bb.objects.filter(title__icontains=keyword, rubric=rubric_id)
+            # bbs = Bb.objects.filter(title__icontains=keyword,
+            #                         rubric=rubric_id)
+
+            bbs = Bb.objects.filter(title__iregex=keyword,
+                                    rubric=rubric_id)
 
             context = {'bbs': bbs, 'form': sf}
             return render(request, 'bboard/search_results.html', context)
