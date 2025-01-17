@@ -1,5 +1,5 @@
 {% extends "layout/basic.html" %}
-
+{% load django_bootstrap5 %}
 
 {% block title %}Добавление объявления{% endblock %}
 
@@ -12,15 +12,23 @@
         <form method="post">
     {% endif %}
         {% csrf_token %}
-        {{ form.as_p }}
+        {# {{ form.as_p }} #}
 {#        {{ form.as_div }}#}
+        {% bootstrap_field form.rubric %}
+        {% bootstrap_form form exclude='rubric' %}
+
+
+
+{#        {% bootstrap_form form %}#}
+        {% bootstrap_button 'Добавить' %}
 {#        <ul>#}
 {#            {{ form.as_ul }}#}
 {#        </ul>#}
 {#        <table>#}
 {#            {{ form.as_table }}#}
 {#        </table>#}
-        <button type="submit">Добавить</button>
+        {#  <button type="submit">Добавить</button>#}
+
     </form>
 
 {% endblock %}

@@ -1,5 +1,5 @@
 {% extends "layout/basic.html" %}
-
+{% load django_bootstrap5 %}
 
 {% block title %}Правка рубрик{% endblock %}
 
@@ -9,44 +9,48 @@
     <form method="post">
         {% csrf_token %}
 
-        {{ formset.management_form }}
-        {% if formset.non_form_errors %}
-            <ul>
-            {% for error in formset.non_form_errors %}
-                <li><em>{{ error|escape }}</em></li>
-            {% endfor %}
-            </ul>
-        {% endif %}
+        {% bootstrap_formset formset %}
+        {% bootstrap_button 'Сохранить' %}
+        {% bootstrap_button 'Очистить' button_type='reset' button_class='btn-secondary'%}
 
-        {% for form in formset %}
-
-            {% for hidden in form.hidden_fields %}
-                {{ hidden }}
-            {% endfor %}
-
-            {% if form.non_form_errors %}
-                <ul>
-                {% for error in form.non_form_errors %}
-                    <li><em>{{ error|escape }}</em></li>
-                {% endfor %}
-                </ul>
-            {% endif %}
-
-            {% for field in form.visible_fields %}
-                {% if field.errors %}
-                    <ul>
-                    {% for error in field.errors %}
-                        <li><em>{{ error|escape }}</em></li>
-                    {% endfor %}
-                    </ul>
-                {% endif %}
-
-                <p>{{ field.label_tag }}<br>{{ field }}<br>
-                    {{ field.help_text }}</p>
-            {% endfor %}
-
-        {% endfor %}
-        <input type="submit" value="Сохранить">
+{#        {{ formset.management_form }}#}
+{#        {% if formset.non_form_errors %}#}
+{#            <ul>#}
+{#            {% for error in formset.non_form_errors %}#}
+{#                <li><em>{{ error|escape }}</em></li>#}
+{#            {% endfor %}#}
+{#            </ul>#}
+{#        {% endif %}#}
+{##}
+{#        {% for form in formset %}#}
+{##}
+{#            {% for hidden in form.hidden_fields %}#}
+{#                {{ hidden }}#}
+{#            {% endfor %}#}
+{##}
+{#            {% if form.non_form_errors %}#}
+{#                <ul>#}
+{#                {% for error in form.non_form_errors %}#}
+{#                    <li><em>{{ error|escape }}</em></li>#}
+{#                {% endfor %}#}
+{#                </ul>#}
+{#            {% endif %}#}
+{##}
+{#            {% for field in form.visible_fields %}#}
+{#                {% if field.errors %}#}
+{#                    <ul>#}
+{#                    {% for error in field.errors %}#}
+{#                        <li><em>{{ error|escape }}</em></li>#}
+{#                    {% endfor %}#}
+{#                    </ul>#}
+{#                {% endif %}#}
+{##}
+{#                <p>{{ field.label_tag }}<br>{{ field }}<br>#}
+{#                    {{ field.help_text }}</p>#}
+{#            {% endfor %}#}
+{##}
+{#        {% endfor %}#}
+{#        <input type="submit" value="Сохранить">#}
     </form>
 
 {% endblock %}
