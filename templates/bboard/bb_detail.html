@@ -1,10 +1,14 @@
 {% extends "layout/basic.html" %}
 {% load bbcode_tags %}
-
+{% load filtertags %}
 
 {% block title %}{{ bb.title }}{% endblock %}
 
 {% block content %}
+
+    {% lst ', ' '1' '2' '3' '4' %}
+    {% ulist '1' '2' '3' '4' %}
+
     <div>
         <p>Рубрика: <a href="{% url 'bboard:by_rubric' bb.rubric.pk %}">
                                                 {{ bb.rubric.name }}</a></p>
@@ -15,7 +19,9 @@
         <p>{% bbcode bb.content %}</p>
 {#        <p>{{ bb.content|bbcode|safe }}</p>#}
 
-        <p>Цена: <strong>{{ bb.price|floatformat:'2g' }}</strong> тг.</p>
+{#        <p>Цена: <strong>{{ bb.price|floatformat:'2g' }}</strong> тг.</p>#}
+        <p>Цена: <strong>{{ bb.price|cur:'руб.' }}</strong></p>
+
         <p>{{ bb.published|date:"d.m.Y H:i:s" }}</p>
         <p>
             <a href="{% url 'bboard:edit' bb.pk %}">Изменить</a> |

@@ -1,7 +1,14 @@
+from datetime import datetime
+
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
 # from precise_bbcode.fields import BBCodeTextField
+from os.path import splitext
+
+
+def get_timestamp_path(instance, filename):
+    return f'{datetime.now().timestamp()}{splitext(filename)[1]}'
 
 
 def validate_even(val):
@@ -23,6 +30,13 @@ class MinMaxValueValidator:
                   params={'min': self.min_value, 'max': self.max_value})
 
 
+class Img(models.Model):
+    img = models.ImageField(verbose_name='Изображение', upload_to=get_timestamp_path)
+    desc = models.TextField(verbose_name='Орисание')
+
+    class Meta:
+        verbose_name = 'Изображение'
+        verbose_name_plural = 'Изображение'
 
 class RubricQuerySet(models.QuerySet):
     def order_by_bb_count(self):
@@ -162,6 +176,9 @@ class Bb(models.Model):
     # email = models.EmailField()
     # url = models.URLField()
     # slug = models.SlugField()
+
+    # archived = models.FileField(upload_to='archive/')
+    # archived = models.FileField(upload_to='archive/%Y/%m/%d')
 
     objects = models.Manager()
     by_price = BbManager()

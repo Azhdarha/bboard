@@ -142,7 +142,17 @@ class BbCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
 def add_and_save(request):
     if request.method == 'POST':
+        # bbf = BbForm(request.POST, request.FILES)
         bbf = BbForm(request.POST)
+        # bbf = BbForm(request.POST, request.FILES)
+        # if bbf = bbf.is_valid()
+        #     for file in request.FILES.getlist('img'):
+        #         img = Img()
+        #         img.desc = bbf.cleaned_data['desc']
+        #         img.img = file
+        #         img.save()
+
+
         if bbf.is_valid():
             bbf.save()
             # return HttpResponseRedirect(reverse('bboard:by_rubric',
@@ -344,3 +354,10 @@ def search(request):
 
     context = {'form': sf}
     return render(request, 'bboard/search.html', context)
+
+
+def delete_img(request, pk):
+    img = Img.objects.get(pk)
+    img.img.delete(save=False)
+    img.delete()
+    return request('bboard:index')

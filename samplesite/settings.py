@@ -14,6 +14,7 @@ from pathlib import Path
 
 from captcha.conf.settings import CAPTCHA_TIMEOUT, CAPTCHA_LENGTH
 from django.conf.global_settings import STATICFILES_DIRS, ABSOLUTE_URL_OVERRIDES, MEDIA_URL
+from django_bootstrap5.core import BOOTSTRAP5
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent

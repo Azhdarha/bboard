@@ -12,23 +12,21 @@
         <form method="post">
     {% endif %}
         {% csrf_token %}
-        {# {{ form.as_p }} #}
-{#        {{ form.as_div }}#}
-        {% bootstrap_field form.rubric %}
-        {% bootstrap_form form exclude='rubric' %}
-
-
+        {# { form.as_p }#}
 
 {#        {% bootstrap_form form %}#}
-        {% bootstrap_button 'Добавить' %}
-{#        <ul>#}
-{#            {{ form.as_ul }}#}
-{#        </ul>#}
-{#        <table>#}
-{#            {{ form.as_table }}#}
-{#        </table>#}
-        {#  <button type="submit">Добавить</button>#}
+{#        {% bootstrap_form form exclude='price,rubric' %}#}
+{#        {% bootstrap_form form layout='horizontal' %}#}
+{#        {% bootstrap_form form layout='floating' %}#}
+{#        {% bootstrap_form form layout='horizontal' show_help=True size='sm' %}#}
 
+        {% bootstrap_field form.rubric %}
+        {% bootstrap_field form.title placeholder='Товар' show_label=False %}
+        {% bootstrap_form form exclude='rubric,title' %}
+
+        {% bootstrap_button 'Добавить' %}
+
+{#        <button type="submit">Добавить</button>#}
     </form>
 
 {% endblock %}
